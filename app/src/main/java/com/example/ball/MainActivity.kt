@@ -4,6 +4,7 @@ import android.content.Context
 import android.graphics.Canvas
 import android.graphics.Color
 import android.graphics.Paint
+import android.graphics.Rect
 import android.hardware.Sensor
 import android.hardware.SensorEvent
 import android.hardware.SensorEventListener
@@ -19,6 +20,11 @@ import kotlin.properties.Delegates
 
 class MainActivity : AppCompatActivity(), SensorEventListener,SurfaceHolder.Callback{
 
+    var flg:Boolean = false
+    var left = 10;
+    var top = 100;
+    var right = 300;
+    var bottom = 200;
 
     //SurfaceView宣言
     var mHolder:SurfaceHolder by Delegates.notNull<SurfaceHolder>()
@@ -98,6 +104,13 @@ class MainActivity : AppCompatActivity(), SensorEventListener,SurfaceHolder.Call
         mVX = mVX + x * t
         mVY = mVY + y * t
 
+        if(left <= mBallx + RADIUS && right >= mBallx - RADIUS
+            && top <= mBally + RADIUS && bottom >= mBally - RADIUS){
+            flg = true;
+        }else{
+            flg = false;
+        }
+
         if(mBallx - RADIUS < 0 && mVX < 0){
             mVX = -mVX / 1.5
             mBallx = RADIUS
@@ -144,6 +157,14 @@ class MainActivity : AppCompatActivity(), SensorEventListener,SurfaceHolder.Call
         var paint = Paint()
         paint.setColor(Color.MAGENTA)
         c.drawCircle(mBallx.toFloat(),mBally.toFloat(), RADIUS.toFloat(),paint)
+
+        paint.setColor(Color.BLUE);
+        var rect: Rect =  Rect(left,top,right,bottom);
+        c.drawRect(rect, paint);
+        if(flg == true){
+            c.drawText("HelloText", 100.0f, 100.0f, paint);
+        }
+
         mHolder.unlockCanvasAndPost(c)
     }
 }
